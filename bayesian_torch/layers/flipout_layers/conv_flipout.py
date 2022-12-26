@@ -137,10 +137,11 @@ class Conv1dFlipout(BaseVariationalLayer_):
 
         self.init_parameters()
 
-    def init_parameters(self):
+    def init_parameters(self, init_prior=True):
         # prior values
-        self.prior_weight_mu.data.fill_(self.prior_mean)
-        self.prior_weight_sigma.data.fill_(self.prior_variance)
+        if init_prior:
+            self.prior_weight_mu.data.fill_(self.prior_mean)
+            self.prior_weight_sigma.data.fill_(self.prior_variance)
 
         # init our weights for the deterministic and perturbated weights
         self.mu_kernel.data.normal_(mean=self.posterior_mu_init, std=.1)
@@ -149,8 +150,21 @@ class Conv1dFlipout(BaseVariationalLayer_):
         if self.bias:
             self.mu_bias.data.normal_(mean=self.posterior_mu_init, std=0.1)
             self.rho_bias.data.normal_(mean=self.posterior_rho_init, std=0.1)
-            self.prior_bias_mu.data.fill_(self.prior_mean)
-            self.prior_bias_sigma.data.fill_(self.prior_variance)
+            if init_prior:
+                self.prior_bias_mu.data.fill_(self.prior_mean)
+                self.prior_bias_sigma.data.fill_(self.prior_variance)
+
+    def update_prior(self, reinit=True):
+        """Set prior to posterior, and optionally re-initialise."""
+        self.prior_weight_mu.copy_(self.mu_kernel)
+        self.prior_weight_sigma.copy_(torch.log1p(torch.exp(self.rho_kernel)))
+
+        if self.bias:
+            self.prior_bias_mu.copy_(self.mu_bias)
+            self.prior_bias_sigma.copy_(torch.log1p(torch.exp(self.rho_bias)))
+
+        if reinit:
+            self.init_parameters(init_prior=False)
 
     def kl_loss(self):
         sigma_weight = torch.log1p(torch.exp(self.rho_kernel))
@@ -304,10 +318,11 @@ class Conv2dFlipout(BaseVariationalLayer_):
 
         self.init_parameters()
 
-    def init_parameters(self):
+    def init_parameters(self, init_prior=True):
         # prior values
-        self.prior_weight_mu.data.fill_(self.prior_mean)
-        self.prior_weight_sigma.data.fill_(self.prior_variance)
+        if init_prior:
+            self.prior_weight_mu.data.fill_(self.prior_mean)
+            self.prior_weight_sigma.data.fill_(self.prior_variance)
 
         # init our weights for the deterministic and perturbated weights
         self.mu_kernel.data.normal_(mean=self.posterior_mu_init, std=.1)
@@ -316,8 +331,21 @@ class Conv2dFlipout(BaseVariationalLayer_):
         if self.bias:
             self.mu_bias.data.normal_(mean=self.posterior_mu_init, std=0.1)
             self.rho_bias.data.normal_(mean=self.posterior_rho_init, std=0.1)
-            self.prior_bias_mu.data.fill_(self.prior_mean)
-            self.prior_bias_sigma.data.fill_(self.prior_variance)
+            if init_prior:
+                self.prior_bias_mu.data.fill_(self.prior_mean)
+                self.prior_bias_sigma.data.fill_(self.prior_variance)
+
+    def update_prior(self, reinit=True):
+        """Set prior to posterior, and optionally re-initialise."""
+        self.prior_weight_mu.copy_(self.mu_kernel)
+        self.prior_weight_sigma.copy_(torch.log1p(torch.exp(self.rho_kernel)))
+
+        if self.bias:
+            self.prior_bias_mu.copy_(self.mu_bias)
+            self.prior_bias_sigma.copy_(torch.log1p(torch.exp(self.rho_bias)))
+
+        if reinit:
+            self.init_parameters(init_prior=False)
 
     def kl_loss(self):
         sigma_weight = torch.log1p(torch.exp(self.rho_kernel))
@@ -472,10 +500,11 @@ class Conv3dFlipout(BaseVariationalLayer_):
 
         self.init_parameters()
 
-    def init_parameters(self):
+    def init_parameters(self, init_prior=True):
         # prior values
-        self.prior_weight_mu.data.fill_(self.prior_mean)
-        self.prior_weight_sigma.data.fill_(self.prior_variance)
+        if init_prior:
+            self.prior_weight_mu.data.fill_(self.prior_mean)
+            self.prior_weight_sigma.data.fill_(self.prior_variance)
 
         # init our weights for the deterministic and perturbated weights
         self.mu_kernel.data.normal_(mean=self.posterior_mu_init, std=.1)
@@ -484,8 +513,21 @@ class Conv3dFlipout(BaseVariationalLayer_):
         if self.bias:
             self.mu_bias.data.normal_(mean=self.posterior_mu_init, std=0.1)
             self.rho_bias.data.normal_(mean=self.posterior_rho_init, std=0.1)
-            self.prior_bias_mu.data.fill_(self.prior_mean)
-            self.prior_bias_sigma.data.fill_(self.prior_variance)
+            if init_prior:
+                self.prior_bias_mu.data.fill_(self.prior_mean)
+                self.prior_bias_sigma.data.fill_(self.prior_variance)
+
+    def update_prior(self, reinit=True):
+        """Set prior to posterior, and optionally re-initialise."""
+        self.prior_weight_mu.copy_(self.mu_kernel)
+        self.prior_weight_sigma.copy_(torch.log1p(torch.exp(self.rho_kernel)))
+
+        if self.bias:
+            self.prior_bias_mu.copy_(self.mu_bias)
+            self.prior_bias_sigma.copy_(torch.log1p(torch.exp(self.rho_bias)))
+
+        if reinit:
+            self.init_parameters(init_prior=False)
 
     def kl_loss(self):
         sigma_weight = torch.log1p(torch.exp(self.rho_kernel))
@@ -634,11 +676,11 @@ class ConvTranspose1dFlipout(BaseVariationalLayer_):
 
         self.init_parameters()
 
-    def init_parameters(self):
+    def init_parameters(self, init_prior=True):
         # prior values
-        self.prior_weight_mu.data.fill_(self.prior_mean)
-        self.prior_weight_sigma.data.fill_
-        (self.prior_variance)
+        if init_prior:
+            self.prior_weight_mu.data.fill_(self.prior_mean)
+            self.prior_weight_sigma.data.fill_(self.prior_variance)
 
         # init our weights for the deterministic and perturbated weights
         self.mu_kernel.data.normal_(mean=self.posterior_mu_init, std=.1)
@@ -647,8 +689,21 @@ class ConvTranspose1dFlipout(BaseVariationalLayer_):
         if self.bias:
             self.mu_bias.data.normal_(mean=self.posterior_mu_init, std=0.1)
             self.rho_bias.data.normal_(mean=self.posterior_rho_init, std=0.1)
-            self.prior_bias_mu.data.fill_(self.prior_mean)
-            self.prior_bias_sigma.data.fill_(self.prior_variance)
+            if init_prior:
+                self.prior_bias_mu.data.fill_(self.prior_mean)
+                self.prior_bias_sigma.data.fill_(self.prior_variance)
+
+    def update_prior(self, reinit=True):
+        """Set prior to posterior, and optionally re-initialise."""
+        self.prior_weight_mu.copy_(self.mu_kernel)
+        self.prior_weight_sigma.copy_(torch.log1p(torch.exp(self.rho_kernel)))
+
+        if self.bias:
+            self.prior_bias_mu.copy_(self.mu_bias)
+            self.prior_bias_sigma.copy_(torch.log1p(torch.exp(self.rho_bias)))
+
+        if reinit:
+            self.init_parameters(init_prior=False)
 
     def kl_loss(self):
         sigma_weight = torch.log1p(torch.exp(self.rho_kernel))
@@ -803,10 +858,11 @@ class ConvTranspose2dFlipout(BaseVariationalLayer_):
 
         self.init_parameters()
 
-    def init_parameters(self):
+    def init_parameters(self, init_prior=True):
         # prior values
-        self.prior_weight_mu.data.fill_(self.prior_mean)
-        self.prior_weight_sigma.data.fill_(self.prior_variance)
+        if init_prior:
+            self.prior_weight_mu.data.fill_(self.prior_mean)
+            self.prior_weight_sigma.data.fill_(self.prior_variance)
 
         # init our weights for the deterministic and perturbated weights
         self.mu_kernel.data.normal_(mean=self.posterior_mu_init, std=.1)
@@ -815,8 +871,21 @@ class ConvTranspose2dFlipout(BaseVariationalLayer_):
         if self.bias:
             self.mu_bias.data.normal_(mean=self.posterior_mu_init, std=0.1)
             self.rho_bias.data.normal_(mean=self.posterior_rho_init, std=0.1)
-            self.prior_bias_mu.data.fill_(self.prior_mean)
-            self.prior_bias_sigma.data.fill_(self.prior_variance)
+            if init_prior:
+                self.prior_bias_mu.data.fill_(self.prior_mean)
+                self.prior_bias_sigma.data.fill_(self.prior_variance)
+
+    def update_prior(self, reinit=True):
+        """Set prior to posterior, and optionally re-initialise."""
+        self.prior_weight_mu.copy_(self.mu_kernel)
+        self.prior_weight_sigma.copy_(torch.log1p(torch.exp(self.rho_kernel)))
+
+        if self.bias:
+            self.prior_bias_mu.copy_(self.mu_bias)
+            self.prior_bias_sigma.copy_(torch.log1p(torch.exp(self.rho_bias)))
+
+        if reinit:
+            self.init_parameters(init_prior=False)
 
     def kl_loss(self):
         sigma_weight = torch.log1p(torch.exp(self.rho_kernel))
@@ -971,10 +1040,11 @@ class ConvTranspose3dFlipout(BaseVariationalLayer_):
 
         self.init_parameters()
 
-    def init_parameters(self):
+    def init_parameters(self, init_prior=True):
         # prior values
-        self.prior_weight_mu.data.fill_(self.prior_mean)
-        self.prior_weight_sigma.data.fill_(self.prior_variance)
+        if init_prior:
+            self.prior_weight_mu.data.fill_(self.prior_mean)
+            self.prior_weight_sigma.data.fill_(self.prior_variance)
 
         # init our weights for the deterministic and perturbated weights
         self.mu_kernel.data.normal_(mean=self.posterior_mu_init, std=.1)
@@ -983,8 +1053,21 @@ class ConvTranspose3dFlipout(BaseVariationalLayer_):
         if self.bias:
             self.mu_bias.data.normal_(mean=self.posterior_mu_init, std=0.1)
             self.rho_bias.data.normal_(mean=self.posterior_rho_init, std=0.1)
-            self.prior_bias_mu.data.fill_(self.prior_mean)
-            self.prior_bias_sigma.data.fill_(self.prior_variance)
+            if init_prior:
+                self.prior_bias_mu.data.fill_(self.prior_mean)
+                self.prior_bias_sigma.data.fill_(self.prior_variance)
+
+    def update_prior(self, reinit=True):
+        """Set prior to posterior, and optionally re-initialise."""
+        self.prior_weight_mu.copy_(self.mu_kernel)
+        self.prior_weight_sigma.copy_(torch.log1p(torch.exp(self.rho_kernel)))
+
+        if self.bias:
+            self.prior_bias_mu.copy_(self.mu_bias)
+            self.prior_bias_sigma.copy_(torch.log1p(torch.exp(self.rho_bias)))
+
+        if reinit:
+            self.init_parameters(init_prior=False)
 
     def kl_loss(self):
         sigma_weight = torch.log1p(torch.exp(self.rho_kernel))

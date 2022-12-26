@@ -32,10 +32,12 @@ import torch.distributions as distributions
 from itertools import repeat
 import collections
 
+
 def get_kernel_size(x, n):
-        if isinstance(x, collections.abc.Iterable):
-            return tuple(x)
-        return tuple(repeat(x, n))
+    if isinstance(x, collections.abc.Iterable):
+        return tuple(x)
+    return tuple(repeat(x, n))
+
 
 class BaseVariationalLayer_(nn.Module):
     def __init__(self):

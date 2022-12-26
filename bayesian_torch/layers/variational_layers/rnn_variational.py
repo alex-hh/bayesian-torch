@@ -95,6 +95,10 @@ class LSTMReparameterization(BaseVariationalLayer_):
             out_features=out_features * 4,
             bias=bias)
 
+    def update_prior(self, reinit=True):
+        self.ih.update_prior(reinit=reinit)
+        self.hh.update_prior(reinit=reinit)
+
     def kl_loss(self):
         kl_i = self.ih.kl_loss()
         kl_h = self.hh.kl_loss()

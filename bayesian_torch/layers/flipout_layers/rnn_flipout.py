@@ -99,6 +99,10 @@ class LSTMFlipout(BaseVariationalLayer_):
         kl_h = self.hh.kl_loss()
         return kl_i + kl_h
 
+    def update_prior(self, reinit=True):
+        self.ih.update_prior(reinit=reinit)
+        self.hh.update_prior(reinit=reinit)
+
     def forward(self, X, hidden_states=None, return_kl=True):
 
         if self.dnn_to_bnn_flag:
